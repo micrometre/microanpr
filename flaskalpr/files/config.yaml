@@ -1,0 +1,74 @@
+listenAddressSingleHTTPFrontend: 0.0.0.0:1337
+logLevel: "INFO"
+pageTitle: ALPR Serveces Control Center
+showFooter: false
+
+actions:
+- title: start redis data base
+  icon: restart
+  shell: sudo systemctl start alpr-redis.service
+  popupOnStart: execution-dialog
+ 
+    
+- title: stop redis data base
+  icon: '&#129302;'
+  shell: sudo systemctl stop alpr-redis.service
+  popupOnStart: execution-dialog
+
+- title: Backup Uploaded video data to CSV 
+  shell: /home/dell/repos/flaskalpr/flaskalpr/scripts/exportdb.sh
+  shellAfterCompleted: "apprise -t 'Notn:  completed' -b 'completed with code {{ exitCode}}. The log is: \n {{ stdout }} '"
+  maxConcurrent: 1
+  timeout: 10
+  icon: backup
+  popupOnStart: execution-dialog
+
+- title: start ALPR for Uploaded Video 
+  icon: restart
+  shell: sudo systemctl start alpr-openalpr.service 
+  popupOnStart: execution-dialog
+
+- title: stop ALPR for Uploaded Video 
+  icon: '&#129302;'
+  shell: sudo systemctl stop alpr-openalpr.service 
+  popupOnStart: execution-dialog
+
+- title: start ALPR for Camera Streams  
+  icon: restart
+  shell: sudo systemctl start alpr-openalpr-camera.service
+  popupOnStart: execution-dialog
+
+- title: stop ALPR for Camera Streams 
+  icon: '&#129302;'
+  shell: sudo systemctl stop alpr-openalpr-camera.service
+  popupOnStart: execution-dialog
+
+- title: start flask application
+  icon: restart
+  shell: sudo systemctl start alpr-flask.service
+  popupOnStart: execution-dialog
+
+- title: stop flask application 
+  icon: '&#129302;'
+  shell: sudo systemctl stop alpr-flask.service
+  popupOnStart: execution-dialog
+
+- title: flush redis Uploaded data base
+  icon: ashtonished
+  shell: /usr/bin/python3  /home/vagrant/flaskalpr/flaskalpr/scripts/flushdb.py
+  arguments:
+    - type: confirmation
+      title: Are you sure?!
+
+- title: Delete/clear  seasion files
+  shell: /home/dell/repos/flaskalpr/flaskalpr/scripts/delete-sesion-file.sh
+  shellAfterCompleted: "apprise -t 'Notn:  completed' -b 'completed with code {{ exitCode}}. The log is: \n {{ stdout }} '"
+  maxConcurrent: 1
+  timeout: 10
+  icon: ashtonished
+  arguments:
+    - type: confirmation
+      title: Are you sure?!
+
+    
+

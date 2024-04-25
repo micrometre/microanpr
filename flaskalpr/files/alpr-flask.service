@@ -1,0 +1,14 @@
+#ExecStart=/home/dell/repos/pyanpr/.venv/bin/python  /home/dell/repos/pyanpr/test.py
+[Unit]
+Description=Alpr Flask
+After=systemd-user-sessions.service
+Requires=alpr-redis.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dell/repos/flaskalpr
+ExecStart=/home/dell/repos/flaskalpr/.venv/bin/flask --app flaskalpr run -h 0.0.0.0 --debug --reload
+Restart=always
+
+
+

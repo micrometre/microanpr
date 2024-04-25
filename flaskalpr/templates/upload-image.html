@@ -1,0 +1,39 @@
+<div class="container">
+
+
+
+
+    <h1>ALPR From Images/Photos</h1>
+    <div class="card card-cover ">
+        <div class="d-flex flex-column ">
+            <h2>Result</h2>
+            <p id="uploaddb" class="hide">alpr_plate from image.</p>
+        </div>
+    </div>
+    <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg">
+        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow0">
+            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                Upload Image/phote File
+            </h2>
+            <div>
+                <form action="http://192.168.1.197/upload_images/" method="POST" enctype="multipart/form-data">
+                    <button class="btn btn-success">
+                        <input type="file" accept="image/*" id="files" name="file" />
+                    </button>
+
+                    <button class="btn btn-success">
+                        <input type="submit" />
+                    </button>
+                </form>
+
+            </div>
+            <h2>Export Data to CSV file</h2>
+            <a class="btn " href="{{url_for('upload_images.download_uploads_img')}}">
+                <button class="btn btn-success">Download</button>
+            </a>
+            <output id="list"></output>
+            <script src="{{url_for('static', filename='js/upload.js')}}"></script>
+        </div>
+
+    </div>
+</div>

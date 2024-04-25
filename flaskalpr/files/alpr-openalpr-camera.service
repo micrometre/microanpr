@@ -1,0 +1,12 @@
+#ExecStart=/home/dell/repos/pyanpr/.venv/bin/python  /home/dell/repos/pyanpr/test.py
+[Unit]
+Description=ALPR Camera node-1
+After=systemd-user-sessions.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dell/repos/flaskalpr
+ExecStart=alprd -f
+
+
+

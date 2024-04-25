@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+    <div class="container">
+        <div class="image-container img-responsive">
+            <ul id="image-list">
+            </ul>
+        <script>
+            const eventSource = new EventSource('http://192.168.56.10:5000/alprd1/alprd1');
+            const listElement = document.getElementById('image-list');
+            eventSource.onmessage = function (currentEvent) {
+                if (currentEvent.data.length > 0) {
+                    const listElement = document.getElementById('image-list');
+                    const newElement = document.createElement('li');
+                    newElement.innerText = currentEvent.data;
+                    console.log(currentEvent)
+                    listElement.appendChild(newElement)
+                }
+            };
+        </script>
+    </div>
+
+</body>
+
+</html>

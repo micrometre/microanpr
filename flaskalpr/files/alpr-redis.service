@@ -1,0 +1,15 @@
+#ExecStart=/home/dell/repos/pyanpr/.venv/bin/python  /home/dell/repos/pyanpr/test.py
+[Unit]
+Description=Alprd and Redis Docker containers
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c "docker compose -f /home/dell/repos/flaskalpr/docker-compose.yml up --detach redis"
+ExecStop=/bin/bash -c "docker compose -f  /home/dell/repos/flaskalpr/docker-compose.yml stop redis"
+ExecReload=/bin/bash -c "docker compose -f  /home/dell/repos/flaskalpr/docker-compose.yml down -v redis"
+
+[Install]
+WantedBy=multi-user.target

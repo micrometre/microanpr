@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    {% include 'head-imports.html' %}
+</head>
+
+<body>
+    <div class="col" id="test">
+        {% include 'nav.html' %}
+    </div>
+
+    {% include 'nav-2.html' %}
+
+    <section class="jumbotron text-center">
+        {% include 'upload-image.html' %}
+
+    </section>
+    <div class="container px-4 py-5" id="custom-cards">
+        <section class="jumbotron text-center">
+            {% include 'upload-video.html' %}
+            {% include 'alprd1-images.html' %}
+            {% include 'alprd1-video.html' %}
+            {% include 'upload-video-results.html' %}
+        </section>
+        <section class="jumbotron text-center">
+        </section>
+    </div>
+
+
+</body>
+{% include 'scripts.html' %}
+
+</html>

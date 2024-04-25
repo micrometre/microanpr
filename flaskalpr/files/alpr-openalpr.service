@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenALPR Docker containers
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c "docker compose -f /home/dell/repos/flaskalpr/docker-compose.yml up --detach --build alpr_upload"
+ExecStop=/bin/bash -c "docker compose -f /home/dell/repos/flaskalpr/docker-compose.yml stop alpr_upload"
+ExecReload=/bin/bash -c "docker compose -f /home/dell/repos/flaskalpr/docker-compose.yml down -v alpr_upload"
+[Install]
+WantedBy=multi-user.target
+

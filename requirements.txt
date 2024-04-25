@@ -1,0 +1,12 @@
+flask
+waitress
+flask
+werkzeug
+redis
+inotify
+flask-cors
+pandas
+inotify
+opencv-python
+pyopenssl
+build
