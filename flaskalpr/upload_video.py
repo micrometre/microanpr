@@ -4,8 +4,10 @@ from flask import (
 import os, subprocess
 import logging
 from werkzeug.utils import secure_filename
+from subprocess import check_output
 
 import redis
+
 
 r = redis.Redis(
     host='localhost',
@@ -17,9 +19,19 @@ bp = Blueprint('upload_video', __name__, url_prefix='/upload_video')
 ALLOWED_EXTENSIONS = {'mp4', 'png', 'jpg', 'jpeg', 'gif'}
 logging.getLogger('flask_cors').level = logging.DEBUG
 
+def get_alprd():
+    stdout = check_output(['./flaskalpr/scripts/alprd.sh']).decode('utf-8')
+    print((type (stdout )))
+    return stdout
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+@bp.route('/test',methods=['GET',])
+def home():
+    return '<pre>'+get_alprd()+'</pre>'
+
+
 
 @bp.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -47,7 +59,7 @@ def upload_file():
             str(alpr_arg6), str(alpr_arg7), str(alpr_arg8)]).decode('utf-8')
             #ffmpeg -i alprVideo_1.mp4 -listen 1 -f mp4 -movflags frag_keyframe+empty_moov http://192.168.1.122:5001
             print(output)            
-            return redirect(url_for('upload_video.upload_file'))
+            return redirect(url_for('home.alpr_home'))
     return '''
     <!doctype html>
     <title>Upload new File</title>
