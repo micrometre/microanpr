@@ -28,13 +28,7 @@ services:
     depends_on:
       - redis
 
-  alpr_upload:
-    build: ./openalpr-upload
-    container_name: alprd-uplaod
-    user: root
-    volumes:
-      - ./flaskalpr/static/camera1_images:/var/lib/openalpr/plateimages      
-    
+
 networks:
   redis-network:
     driver: bridge      
