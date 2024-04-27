@@ -47,6 +47,10 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join( 'flaskalpr/static/uploaded-video',filename))
             alpr_file = (os.path.join('flaskalpr/static/uploaded-video', filename))
+            start_alprd = subprocess.check_output(['alprd'])
+            clean_seasion_files = subprocess.check_output(["make", "clean"], text=True)
+            clean_data = subprocess.check_output(["make", "update"], text=True)
+            print(clean_seasion_files)
             alpr_arg1 = "-i"
             alpr_arg2 = "-listen"
             alpr_arg3 = "1"
@@ -58,7 +62,6 @@ def upload_file():
             output = subprocess.check_output(['ffmpeg',str(alpr_arg1), str(alpr_file), str(alpr_arg2), str(alpr_arg3), str(alpr_arg4), str(alpr_arg5), 
             str(alpr_arg6), str(alpr_arg7), str(alpr_arg8)]).decode('utf-8')
             #ffmpeg -i alprVideo_1.mp4 -listen 1 -f mp4 -movflags frag_keyframe+empty_moov http://192.168.1.122:5001
-            print(output)            
             return redirect(url_for('home.alpr_home'))
     return '''
     <!doctype html>

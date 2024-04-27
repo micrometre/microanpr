@@ -7,9 +7,7 @@ wait:
 	waitress-serve  --call 'flaskalpr:create_app'	
 
 clean: 
-	sudo rm -rf flaskalpr/static/alprd1_images/
-	sudo rm -rf flaskalpr/static/camera1_images/
-	mkdir flaskalpr/static/camera1_images/
+	rm -rf flaskalpr/static/alprd1_images/
 	mkdir flaskalpr/static/alprd1_images
 
 start:
