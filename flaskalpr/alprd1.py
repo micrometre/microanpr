@@ -53,7 +53,7 @@ def alpr_from_video():
             },
         )
         r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
-        r.hset("alpr_plate_to_img", alpr_plate, alpr_img_plate)
+        r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
         r.publish("alprd1", json.dumps(data))
         r.publish("alprd1images", ((alpr_img_uuid)))
         return jsonify(status="success", message="published", data=data)
