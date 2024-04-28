@@ -40,7 +40,9 @@ def alpr_from_video():
     alpr_plate = alpr_results[0]["plate"]
     alpr_img = get_images_alprd1()
     alpr_img_plate = alpr_img[1]
-    print(alpr_img_uuid)
+    a = json.dumps(alpr_plate)
+    if len(a) == 9:
+        print(a)
     try:
         data = alpr_plate
         r.hset(
@@ -108,7 +110,7 @@ def alpr_db():
     b = df.to_json(orient='values')
     c = loads(b)
     d = dumps(c)
-    print(type(d)) 
+    print(df) 
     return(c) 
          
 @bp.route('/check_key', methods=['GET'])
@@ -127,7 +129,6 @@ def alprd_video1():
     data = request.get_data()
     z = request.data
     x = ("{}".format(z))
-    print(x)
     alprd_img_res = ("{}".format(data))
     a = json.dumps(alprd_img_res)
     b = json.loads(a)
@@ -136,11 +137,10 @@ def alprd_video1():
     return(z)
 
 
-@bp.route("/alprd5", methods=["POST"])
-def alprd_video():
-    a = request.get_data()
-    b = ("{}".format(a[213:][:-395]))
-    c = request.headers.get('User-Agent')
-    d = request.headers.get('Content-Type')
-    print(d)
-    return (a)
+@bp.route('/db2')
+def alpr_db2():
+    stored_alpr  = r.hgetall(
+        "alpr_plate_to_img"
+        )
+    print(type(stored_alpr))
+    return(stored_alpr) 
