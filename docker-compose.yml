@@ -31,7 +31,7 @@ services:
     build: ./openalpr-upload
     user: root
     volumes:
-      - ./flaskalpr/static/alprd_images:/var/lib/openalpr/plateimages      
+      - ./flaskalpr/static/alprd1_images:/var/lib/openalpr/plateimages      
 networks:
   redis-network:
     driver: bridge      

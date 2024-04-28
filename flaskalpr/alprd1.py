@@ -1,43 +1,46 @@
 from flask import (
     Response, Blueprint, request, jsonify, render_template, send_file 
 )
+import os
+from flask import Flask, flash, request, redirect, url_for
+from werkzeug.utils import secure_filename
+
 import redis
 import json
 from flaskalpr.filewatch import  get_images_alprd1
 import pandas as pd
 from json import loads, dumps
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 r = redis.Redis(
     host='localhost',
     port=6379,
     decode_responses=True,
 )
+ALLOWED_EXTENSIONS = {'mp4', 'png', 'jpg', 'jpeg', 'gif'}
 
 bp = Blueprint('alprd1', __name__, url_prefix='/alprd1')
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@bp.route("/alprd", methods=["POST"])
-def alprd_video():
-    a = request.get_data()
-    b = ("{}".format(a))
-    c = json.dumps(b)
-    d = json.loads(c)
-    z = request.data
-    x = ("{}".format(z))
-    w = json.dumps(x)
-    u = json.loads(w)
-    u = b[2:][:-1]
-    print(u)
-    return jsonify("22")
+
+
+
 
 
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
     get_images_alprd1()
     request_data = request.get_json()
+    alpr_uuid = request_data["uuid"]
+    alpr_img_uuid = ("http://192.168.1.197:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     alpr_img = get_images_alprd1()
     alpr_img_plate = alpr_img[1]
+    print(alpr_img_uuid)
     try:
         data = alpr_plate
         r.hset(
@@ -46,11 +49,13 @@ def alpr_from_video():
                 "alpr_plate_id": alpr_plate,
                 "alpr_plate": alpr_plate,
                 "alpr_plate_img": alpr_img_plate,
+                "alpr_plate_uuid": alpr_img_uuid,
             },
         )
         r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
         r.hset("alpr_plate_to_img", alpr_plate, alpr_img_plate)
         r.publish("alprd1", json.dumps(data))
+        r.publish("alprd1images", ((alpr_img_uuid)))
         return jsonify(status="success", message="published", data=data)
     except:
         return jsonify(status="fail", message="not published")    
@@ -117,7 +122,7 @@ def check_key():
     data = [plate, img]
     return jsonify(status="success", data=data)
 
-@bp.route("/alprd", methods=["POST"])
+@bp.route("/alprd3", methods=["POST"])
 def alprd_video1():
     data = request.get_data()
     z = request.data
@@ -129,3 +134,13 @@ def alprd_video1():
     c = b[19:][:-1]
     alpr_img = ("http://192.168.1.197:5000/{}".format(c))
     return(z)
+
+
+@bp.route("/alprd5", methods=["POST"])
+def alprd_video():
+    a = request.get_data()
+    b = ("{}".format(a[213:][:-395]))
+    c = request.headers.get('User-Agent')
+    d = request.headers.get('Content-Type')
+    print(d)
+    return (a)

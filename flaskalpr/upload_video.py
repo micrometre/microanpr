@@ -42,7 +42,7 @@ def upload_file():
             file.save(os.path.join( 'flaskalpr/static/uploaded-video',filename))
             alpr_file = (os.path.join('flaskalpr/static/uploaded-video', filename))
             start_alprd = subprocess.check_output(['alprd'])
-            clean_seasion_files = subprocess.check_output(["make", "clean"], text=True)
+            #clean_seasion_files = subprocess.check_output(["make", "clean"], text=True)
             alpr_arg1 = "-i"
             alpr_arg2 = "-listen"
             alpr_arg3 = "1"
