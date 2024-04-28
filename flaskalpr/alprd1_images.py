@@ -19,6 +19,5 @@ def alprd_images():
         pubsub.subscribe("alprd1images")
         for message in pubsub.listen():
                 data = message["data"]
-                print(data)
                 yield "data: {}\n\n".format(str(data))
     return Response(alpr_sse_events(), mimetype="text/event-stream")

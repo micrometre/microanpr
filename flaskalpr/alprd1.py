@@ -15,6 +15,20 @@ r = redis.Redis(
 bp = Blueprint('alprd1', __name__, url_prefix='/alprd1')
 
 
+@bp.route("/alprd", methods=["POST"])
+def alprd_video():
+    a = request.get_data()
+    b = ("{}".format(a))
+    c = json.dumps(b)
+    d = json.loads(c)
+    z = request.data
+    x = ("{}".format(z))
+    w = json.dumps(x)
+    u = json.loads(w)
+    u = b[2:][:-1]
+    print(u)
+    return jsonify("22")
+
 
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
@@ -102,3 +116,16 @@ def check_key():
     img = format(get_image)
     data = [plate, img]
     return jsonify(status="success", data=data)
+
+@bp.route("/alprd", methods=["POST"])
+def alprd_video1():
+    data = request.get_data()
+    z = request.data
+    x = ("{}".format(z))
+    print(x)
+    alprd_img_res = ("{}".format(data))
+    a = json.dumps(alprd_img_res)
+    b = json.loads(a)
+    c = b[19:][:-1]
+    alpr_img = ("http://192.168.1.197:5000/{}".format(c))
+    return(z)

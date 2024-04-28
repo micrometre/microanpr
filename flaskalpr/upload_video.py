@@ -19,17 +19,11 @@ bp = Blueprint('upload_video', __name__, url_prefix='/upload_video')
 ALLOWED_EXTENSIONS = {'mp4', 'png', 'jpg', 'jpeg', 'gif'}
 logging.getLogger('flask_cors').level = logging.DEBUG
 
-def get_alprd():
-    stdout = check_output(['./flaskalpr/scripts/alprd.sh']).decode('utf-8')
-    print((type (stdout )))
-    return stdout
+
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-@bp.route('/test',methods=['GET',])
-def home():
-    return '<pre>'+get_alprd()+'</pre>'
 
 
 
@@ -49,8 +43,6 @@ def upload_file():
             alpr_file = (os.path.join('flaskalpr/static/uploaded-video', filename))
             start_alprd = subprocess.check_output(['alprd'])
             clean_seasion_files = subprocess.check_output(["make", "clean"], text=True)
-            clean_data = subprocess.check_output(["make", "update"], text=True)
-            print(clean_seasion_files)
             alpr_arg1 = "-i"
             alpr_arg2 = "-listen"
             alpr_arg3 = "1"
@@ -61,7 +53,6 @@ def upload_file():
             alpr_arg8 = "http://127.0.0.1:5001"
             output = subprocess.check_output(['ffmpeg',str(alpr_arg1), str(alpr_file), str(alpr_arg2), str(alpr_arg3), str(alpr_arg4), str(alpr_arg5), 
             str(alpr_arg6), str(alpr_arg7), str(alpr_arg8)]).decode('utf-8')
-            #ffmpeg -i alprVideo_1.mp4 -listen 1 -f mp4 -movflags frag_keyframe+empty_moov http://192.168.1.122:5001
             return redirect(url_for('home.alpr_home'))
     return '''
     <!doctype html>

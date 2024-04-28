@@ -8,7 +8,9 @@ wait:
 
 clean: 
 	rm -rf flaskalpr/static/alprd1_images/
+	rm -rf flaskalpr/static/alprd_images/
 	mkdir flaskalpr/static/alprd1_images
+	mkdir flaskalpr/static/alprd_images
 
 start:
 	docker-compose up -d 
