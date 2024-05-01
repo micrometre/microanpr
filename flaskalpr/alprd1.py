@@ -116,7 +116,7 @@ def alpr_db():
 @bp.route('/check_key', methods=['GET'])
 def check_key():
     key = request.args.get('key')  # Retrieve key from request arguments
-    field = request.args.get('field')  # Retrieve field from request arguments
+    field = request.args.get('field')  # Retrieve field from request rguments
     get_plate = r.hget(key, field)  # Check if the field exists in the hash
     plate = format(get_plate)
     get_image = r.hget("alpr_plate_to_img", get_plate)  # Check if the field exists in the hash
