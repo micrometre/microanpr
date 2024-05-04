@@ -41,8 +41,6 @@ def alpr_from_video():
     alpr_img = get_images_alprd1()
     alpr_img_plate = alpr_img[1]
     a = json.dumps(alpr_plate)
-    if len(a) == 9:
-        print(a)
     try:
         data = alpr_plate
         r.hset(
@@ -72,9 +70,6 @@ def sse():
                 yield "data: {}\n\n".format(str(data))
     return Response(sse_events(), mimetype="text/event-stream")
 
-@bp.route('/mobile', methods=["GET"])
-def camera_sse_moblie():
-    return render_template('mobile.html')
 
 
 
@@ -90,29 +85,8 @@ def download():
     return send_file(path, as_attachment=True)
     
 
-@bp.route('/db-table')
-def alpr_db_table():
-    stored_alpr  = r.hgetall(
-        "alpr_plate_to_img"
-        )
-    df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values'])
-    a = format(stored_alpr)
-    print(a) 
-    return render_template('data.html',  tables=[df.to_html(classes='data')],  titles=df.columns.values)
-         
 
-@bp.route('/db')
-def alpr_db():
-    stored_alpr  = r.hgetall(
-        "alpr_plate_to_img"
-        )
-    df = pd.DataFrame(list(stored_alpr.items()))
-    b = df.to_json(orient='values')
-    c = loads(b)
-    d = dumps(c)
-    print(df) 
-    return(c) 
-         
+
 @bp.route('/check_key', methods=['GET'])
 def check_key():
     key = request.args.get('key')  # Retrieve key from request arguments
@@ -124,17 +98,7 @@ def check_key():
     data = [plate, img]
     return jsonify(status="success", data=data)
 
-@bp.route("/alprd3", methods=["POST"])
-def alprd_video1():
-    data = request.get_data()
-    z = request.data
-    x = ("{}".format(z))
-    alprd_img_res = ("{}".format(data))
-    a = json.dumps(alprd_img_res)
-    b = json.loads(a)
-    c = b[19:][:-1]
-    alpr_img = ("http://192.168.1.197:5000/{}".format(c))
-    return(z)
+
 
 
 @bp.route('/db2')

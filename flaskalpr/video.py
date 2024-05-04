@@ -6,4 +6,4 @@ bp = Blueprint('video', __name__, url_prefix='/video')
 
 @bp.route("/")
 def video():
-    return send_file("./static/uploaded-video/alprVideo.mp4")
+    return send_file("./static/uploaded-video/alpr-video.mp4")
