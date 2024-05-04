@@ -1,0 +1,12 @@
+flask
+flask-cors
+werkzeug
+redis
+mysql.connector
+inotify
+flask-cors
+pandas
+opencv-python
+waitress
+pyopenssl
+build

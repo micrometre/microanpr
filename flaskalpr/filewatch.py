@@ -15,10 +15,7 @@ def get_images_alprd1():
     i.add_watch('./flaskalpr/static/alprd1_images')
     for event in i.event_gen(yield_nones=False):
         (_, type_names, path, filename) = event
-        #alpr_images_sse = ("http://192.168.1.122:5000/alprd1_images/{}".format(filename))
         alpr_images_sse = ("http://192.168.1.197:5000/alprd1_images/{}".format(filename))
         a = alpr_images_sse.strip("\'")
-        #print(a)
-        #r.publish("alprd1images", ((a)))
         return ("alprd-upload", ((a)))
 

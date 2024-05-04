@@ -1,0 +1,7 @@
+[mysqld]
+skip-host-cache
+skip-name-resolve
+max_connections=1000   
+open_files_limit = 8192
+slow_query_log  = ON
+long_query_time = 1

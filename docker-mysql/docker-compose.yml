@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+   db:
+     image: mysql:5.7
+     container_name: db
+     volumes:
+       - ./data:/docker-entrypoint-initdb.d # where to find our data 
+       - ./conf.d:/etc/mysql/conf.d          
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: 395F844E696D423F6B7ACBBA301539668E6
+       MYSQL_DATABASE: alprdata
+       MYSQL_USER: alpruser
+       MYSQL_PASSWORD: =[-p0o9i8U
+     ports:
+     - 3306:3306
+     expose:
+       - 3306
+   adminer:
+     image: adminer
+     restart: always
+     ports:
+       - 8080:8080       
+volumes:      
+    data:         
