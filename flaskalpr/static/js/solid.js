@@ -7,8 +7,8 @@ import html from "https://esm.sh/solid-js@1.8.1/html";
 
 const Plates = () => {
     const [plates, setPlates] = createSignal([])
-    //var source = new EventSource("http://192.168.1.122:5000/alprd1/alprd1   ");
-    var source = new EventSource("http://192.168.1.197:5000/alprd1/alprd1");
+    var source = new EventSource("http://192.168.1.122:5000/alprd1/alprd1   ");
+    //var source = new EventSource("http://192.168.1.197:5000/alprd1/alprd1");
     source.onmessage = function (event) {
         const alprdData = JSON.parse(event.data)
         setPlates(alprdData)
@@ -35,8 +35,8 @@ const PlatesImages = () => {
             "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/No_sign.svg/192px-No_sign.svg.png";
     }
 
-    //var source = new EventSource("http://192.168.1.122:5000/alprd1_images");
-    var source = new EventSource("http://192.168.1.197:5000/alprd1_images/");
+    var source = new EventSource("http://192.168.1.122:5000/alprd1_images");
+    //var source = new EventSource("http://192.168.1.197:5000/alprd1_images/");
     source.onmessage = function (event) {
         const alprdData = event.data
         setPlatesImages(alprdData)

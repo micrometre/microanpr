@@ -44,18 +44,11 @@ def allowed_file(filename):
 def alpr_from_video():
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
-    alpr_img_uuid = ("http://192.168.1.197:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+    #alpr_img_uuid = ("http://192.168.1.197:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+    alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     alpr_obj =  {'id': alpr_uuid,  'plate' : alpr_plate, 'img' :  alpr_img_uuid }
-    print((alpr_obj))
-    alprcursor = alprdb.cursor()
-    alprcursor.execute("CREATE DATABASE IF NOT EXISTS alprdata;")
-    alprcursor.execute("CREATE TABLE  IF NOT EXISTS  plates (id INT KEY AUTO_INCREMENT, uuid TEXT, plate TEXT, img TEXT );")
-    sql = "INSERT INTO plates (uuid, plate, img) VALUES (%s, %s,%s)"
-    val = (alpr_uuid, alpr_plate, alpr_img_uuid)
-    alprcursor.execute(sql,val)
-    alprdb.commit()
     try:
         data = alpr_plate
         r.publish("alprd1", json.dumps(data))

@@ -1,26 +1,64 @@
-version: '3.3'
-
+# docker-compose.yml
+version: '3.8'
 services:
-   db:
-     image: mysql:5.7
-     container_name: db
-     volumes:
-       - ./data:/docker-entrypoint-initdb.d # where to find our data 
-       - ./conf.d:/etc/mysql/conf.d          
-     restart: always
-     environment:
-       MYSQL_ROOT_PASSWORD: 395F844E696D423F6B7ACBBA301539668E6
-       MYSQL_DATABASE: alprdata
-       MYSQL_USER: alpruser
-       MYSQL_PASSWORD: =[-p0o9i8U
-     ports:
-     - 3306:3306
-     expose:
-       - 3306
-   adminer:
-     image: adminer
-     restart: always
-     ports:
-       - 8080:8080       
-volumes:      
-    data:         
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080  
+    depends_on:
+      - db
+  db:
+    image: mysql:5.7
+    container_name: db
+    volumes:
+      - ./docker-mysql/data:/docker-entrypoint-initdb.d # where to find our data 
+      - ./docker-mysql/conf.d:/etc/mysql/conf.d          
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 395F844E696D423F6B7ACBBA301539668E6
+      MYSQL_DATABASE: alprdata
+      MYSQL_USER: alpruser
+      MYSQL_PASSWORD: =[-p0o9i8U
+    ports:
+    - 3306:3306
+    expose:
+      - 3306
+  redis:
+    image: redis:latest
+    container_name: redis
+    command: redis-server
+    volumes:
+      - redis:/var/lib/redis
+      - redis-config:/usr/local/etc/redis/redis.conf
+    ports:
+      - 6379:6379
+    networks:
+      - redis-network
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - HTTP_USER=root
+      - HTTP_PASSWORD=qwerty
+    ports:
+      - 8081:8081
+    networks:
+      - redis-network
+    depends_on:
+      - redis
+  alpr:
+    build: ./openalpr-upload
+    user: root
+    volumes:
+      - ./flaskalpr/static/alprd1_images:/var/lib/openalpr/plateimages      
+
+networks:
+  redis-network:
+    driver: bridge      
+volumes:
+  data:
+  redis:
+  redis-config:      
