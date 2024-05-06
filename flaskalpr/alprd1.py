@@ -25,14 +25,6 @@ r = redis.Redis(
     port=6379,
     decode_responses=True,
 )
-alprdb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="395F844E696D423F6B7ACBBA301539668E6",
-  port= 3306,
-  database="alprdata"
-)
-
 bp = Blueprint('alprd1', __name__, url_prefix='/alprd1')
 
 def allowed_file(filename):
@@ -40,19 +32,39 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+#alpr_img_uuid = ("http://192.168.1.197:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+
+
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
-    #alpr_img_uuid = ("http://192.168.1.197:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
-    alpr_obj =  {'id': alpr_uuid,  'plate' : alpr_plate, 'img' :  alpr_img_uuid }
     try:
         data = alpr_plate
+        r.hset(
+            f"alpr_plate:{alpr_plate}",
+            mapping={
+                "alpr_plate_id": alpr_plate,
+                "alpr_plate": alpr_plate,
+                "alpr_plate_img": alpr_img_uuid,
+            },
+        )
+        r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
+        r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
         r.publish("alprd1", json.dumps(data))
         r.publish("alprd1images", ((alpr_img_uuid)))
+        stored_alpr  = r.hgetall(
+        "alpr_plate_to_img"
+        )
+        d = {'key1':['hello', 'ab', 'a', 'morning', 'sunset', 'metaphysics'],
+             'key2':['hi', 'morning', 'sunset', 'metaphysics'],
+             'key3':['hey', 'sunset', 'metaphysics']}
+        for key, val in d.items():
+            d[key] = [v for v in val if len(v) > 1]
+            print (d)
         return jsonify(status="success", message="published", data=data)
     except:
         return jsonify(status="fail", message="not published")    
@@ -67,15 +79,9 @@ def sse():
                 yield "data: {}\n\n".format(str(data))
     return Response(sse_events(), mimetype="text/event-stream")
 
-@bp.route("/db", methods=["GET"])
-def alpr_result():
-        upcursor = alprdb.cursor()
-        upcursor.execute("SELECT * FROM plates WHERE LENGTH(plate) = 7;")
-        upresult = upcursor.fetchall()
-        j = json.dumps(upresult)
-        print()
-        return(j)
-
-
-
-
+@bp.route('/db2')
+def alpr_db2():
+    stored_alpr  = r.hgetall(
+        "alpr_plate_to_img"
+        )
+    return(stored_alpr) 
