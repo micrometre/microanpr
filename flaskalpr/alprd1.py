@@ -43,29 +43,18 @@ def alpr_from_video():
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     if len(alpr_plate) == 7 :
-         print(request_data['uuid'])
-         print(alpr_img_uuid)
-         print(alpr_plate)
          r.hset(
-            f"alpr_plate2:{alpr_plate}",
-            mapping={
-                "alpr_plate_id": alpr_plate,
-                "alpr_plate": alpr_plate,
-                "alpr_plate_img": alpr_img_uuid,
-            },
-        )
-    try:
-        data = alpr_plate
-        r.hset(
             f"alpr_plate:{alpr_plate}",
             mapping={
                 "alpr_plate_id": alpr_plate,
                 "alpr_plate": alpr_plate,
                 "alpr_plate_img": alpr_img_uuid,
             },
-        )
-        r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
-        r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
+        ) 
+         r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
+         r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
+    try:
+        data = alpr_plate
         r.publish("alprd1", json.dumps(data))
         r.publish("alprd1images", ((alpr_img_uuid)))
         return jsonify(status="success", message="published", data=data)
@@ -82,12 +71,20 @@ def sse():
                 yield "data: {}\n\n".format(str(data))
     return Response(sse_events(), mimetype="text/event-stream")
 
-@bp.route('/db2')
-def alpr_db2():
+@bp.route('/db')
+def alpr_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img"
         )
-    alpr_list = list(stored_alpr.items())
+    return(stored_alpr) 
 
-    print(alpr_list[0][0])
-    return(alpr_list) 
+@bp.route('/download')
+def download():
+    stored_alpr  = r.hgetall(
+        "alpr_plate_to_img"
+        )
+    df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values'])
+    df.to_csv('flaskalpr/data/upload-video.csv', sep='\t', encoding='utf-8' )
+    print(df.to_string()) 
+    path = 'data/upload-video.csv'
+    return send_file(path, as_attachment=True)
