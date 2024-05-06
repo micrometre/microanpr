@@ -16,6 +16,7 @@ from json import loads, dumps
 import mysql.connector
 
 
+#alpr_img_uuid = ("http://192.168.1.197:5000/alprd1_images/{}.jpg".format(alpr_uuid))
 
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
@@ -32,7 +33,6 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-#alpr_img_uuid = ("http://192.168.1.197:5000/alprd1_images/{}.jpg".format(alpr_uuid))
 
 
 @bp.route('/alprd1', methods=["POST"])
@@ -42,6 +42,18 @@ def alpr_from_video():
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
+    if len(alpr_plate) == 7 :
+         print(request_data['uuid'])
+         print(alpr_img_uuid)
+         print(alpr_plate)
+         r.hset(
+            f"alpr_plate2:{alpr_plate}",
+            mapping={
+                "alpr_plate_id": alpr_plate,
+                "alpr_plate": alpr_plate,
+                "alpr_plate_img": alpr_img_uuid,
+            },
+        )
     try:
         data = alpr_plate
         r.hset(
@@ -56,15 +68,6 @@ def alpr_from_video():
         r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
         r.publish("alprd1", json.dumps(data))
         r.publish("alprd1images", ((alpr_img_uuid)))
-        stored_alpr  = r.hgetall(
-        "alpr_plate_to_img"
-        )
-        d = {'key1':['hello', 'ab', 'a', 'morning', 'sunset', 'metaphysics'],
-             'key2':['hi', 'morning', 'sunset', 'metaphysics'],
-             'key3':['hey', 'sunset', 'metaphysics']}
-        for key, val in d.items():
-            d[key] = [v for v in val if len(v) > 1]
-            print (d)
         return jsonify(status="success", message="published", data=data)
     except:
         return jsonify(status="fail", message="not published")    
@@ -84,4 +87,7 @@ def alpr_db2():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img"
         )
-    return(stored_alpr) 
+    alpr_list = list(stored_alpr.items())
+
+    print(alpr_list[0][0])
+    return(alpr_list) 
