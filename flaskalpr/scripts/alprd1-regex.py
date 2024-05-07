@@ -42,18 +42,22 @@ def alpr_from_video():
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
-    if len(alpr_plate) == 7 and re.search('A', alpr_plate): 
-         print(alpr_plate)
-         r.hset(
-            f"alpr_plate:{alpr_plate}",
-            mapping={
-                "alpr_plate_id": alpr_plate,
-                "alpr_plate": alpr_plate,
-                "alpr_plate_img": alpr_img_uuid,
-            },
-        ) 
-         r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
-         r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
+    text = "My phone number is SL 45 LEX"
+    phone_pattern = r"\w{2} \d{2} \w{3}"
+    match_obj = re.search(phone_pattern, text)
+    if len(alpr_plate) == 7 and match_obj:
+            match_obj = re.search(phone_pattern, alpr_plate)
+            print(f"Phone number found: {alpr_plate}")
+            r.hset(
+                f"alpr_plate:{alpr_plate}",
+                mapping={
+                    "alpr_plate_id": alpr_plate,
+                    "alpr_plate": alpr_plate,
+                    "alpr_plate_img": alpr_img_uuid,
+                },
+            ) 
+            r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
+            r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
     try:
         data = alpr_plate
         r.publish("alprd1", json.dumps(data))

@@ -42,29 +42,20 @@ def alpr_from_video():
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
-    text = "My phone number is 12 45 789"
-    phone_pattern = r"\d{2} \d{2} \d{3}"
-    match_obj = re.search(phone_pattern, text)
-
-    if match_obj:
-        phone_number = match_obj.group()  # Access the matched text
-        print(f"Phone number found: {phone_number}")
-    else:
-        print("Phone number not found")
-
-
-
-    if len(alpr_plate) == 7 : 
-         r.hset(
-            f"alpr_plate:{alpr_plate}",
-            mapping={
-                "alpr_plate_id": alpr_plate,
-                "alpr_plate": alpr_plate,
-                "alpr_plate_img": alpr_img_uuid,
-            },
-        ) 
-         r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
-         r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
+    if len(alpr_plate) == 7:
+            phoneNumRegex = re.compile(r'\d\d \d\d \d\d\d')
+            mo = phoneNumRegex.search('41 55 424')
+            print(mo.string)
+            r.hset(
+                f"alpr_plate:{alpr_plate}",
+                mapping={
+                    "alpr_plate_id": alpr_plate,
+                    "alpr_plate": alpr_plate,
+                    "alpr_plate_img": alpr_img_uuid,
+                },
+            ) 
+            r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
+            r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
     try:
         data = alpr_plate
         r.publish("alprd1", json.dumps(data))
