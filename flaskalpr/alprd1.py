@@ -1,6 +1,6 @@
 from __future__ import print_function
 from datetime import date, datetime, timedelta
-
+import re
 from flask import (
     Response, Blueprint, request, jsonify, render_template, send_file 
 )
@@ -42,7 +42,19 @@ def alpr_from_video():
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
-    if len(alpr_plate) == 7 :
+    text = "My phone number is 12 45 789"
+    phone_pattern = r"\d{2} \d{2} \d{3}"
+    match_obj = re.search(phone_pattern, text)
+
+    if match_obj:
+        phone_number = match_obj.group()  # Access the matched text
+        print(f"Phone number found: {phone_number}")
+    else:
+        print("Phone number not found")
+
+
+
+    if len(alpr_plate) == 7 : 
          r.hset(
             f"alpr_plate:{alpr_plate}",
             mapping={
