@@ -47,7 +47,7 @@ def alpr_from_video():
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
-    match = re.search(r'\w\w\d\d\w\w\w', alpr_plate)
+    match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
     if match:
         print(match.group())  
         r.hset(
