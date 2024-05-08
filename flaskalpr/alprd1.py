@@ -40,41 +40,26 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def isValidVehicleNumberPlate(str):
-	#regex = "^[A-Z]{2}[\\s-]{0,1}[0-9]{2}[\\s-]{0,1}[A-Z]{1,2}[\\s-]{0,1}[0-9]{4}$"
-	regex = "^[A-Z]{2}[\s]"
-	p = re.compile(regex)
-	if (str == None):
-		return False
-	if(re.search(p, str)):
-		return str
-	else:
-		return False
-
-
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
-    str1 = "UP 19 JKL"
-    print(isValidVehicleNumberPlate(alpr_plate))
-    str2 = "UP 191 JKL1"
-    print(isValidVehicleNumberPlate(str2))
-    
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
-    if len(alpr_plate) == 7:
-            r.hset(
-                f"alpr_plate:{alpr_plate}",
-                mapping={
-                    "alpr_plate_id": alpr_plate,
-                    "alpr_plate": alpr_plate,
-                    "alpr_plate_img": alpr_img_uuid,
-                },
-            ) 
-            r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
-            r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
+    match = re.search(r'\w\w\d\d\w\w\w', alpr_plate)
+    if match:
+        print(match.group())  
+        r.hset(
+            f"alpr_plate:{alpr_plate}",
+            mapping={
+                "alpr_plate_id": alpr_plate,
+                "alpr_plate": alpr_plate,
+                "alpr_plate_img": alpr_img_uuid,
+            },
+        ) 
+        r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
+        r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
     try:
         data = alpr_plate
         r.publish("alprd1", json.dumps(data))
