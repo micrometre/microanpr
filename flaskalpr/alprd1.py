@@ -16,7 +16,15 @@ from json import loads, dumps
 import mysql.connector
 
 
-#alpr_img_uuid = ("http://192.168.1.197:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+
+
+# Test Case 1:
+str1 = "UP 50 BY 1998"
+str2 = "MH-05-DL-9023"
+str3 = "BNZAA2318JM"
+str4 = "MH 05 S 9954"
+str5 = "934517865"
+str6 = "MH05DL9023"
 
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
@@ -32,20 +40,31 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
+def isValidVehicleNumberPlate(str):
+	#regex = "^[A-Z]{2}[\\s-]{0,1}[0-9]{2}[\\s-]{0,1}[A-Z]{1,2}[\\s-]{0,1}[0-9]{4}$"
+	regex = "^[A-Z]{2}[\s]"
+	p = re.compile(regex)
+	if (str == None):
+		return False
+	if(re.search(p, str)):
+		return str
+	else:
+		return False
 
 
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
+    str1 = "UP 19 JKL"
+    print(isValidVehicleNumberPlate(alpr_plate))
+    str2 = "UP 191 JKL1"
+    print(isValidVehicleNumberPlate(str2))
+    
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     if len(alpr_plate) == 7:
-            phoneNumRegex = re.compile(r'\d\d \d\d \d\d\d')
-            mo = phoneNumRegex.search('41 55 424')
-            print(mo.string)
             r.hset(
                 f"alpr_plate:{alpr_plate}",
                 mapping={
