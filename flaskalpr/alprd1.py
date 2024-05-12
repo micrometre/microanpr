@@ -18,15 +18,6 @@ import mysql.connector
 
 
 
-# Test Case 1:
-str1 = "UP 50 BY 1998"
-str2 = "MH-05-DL-9023"
-str3 = "BNZAA2318JM"
-str4 = "MH 05 S 9954"
-str5 = "934517865"
-str6 = "MH05DL9023"
-
-
 UPLOAD_FOLDER = '/path/to/the/uploads'
 ALLOWED_EXTENSIONS = {'mp4', 'png', 'jpg', 'jpeg', 'gif'}
 r = redis.Redis(
@@ -45,6 +36,7 @@ def alpr_from_video():
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+    #alpr_img_uuid = ("http://34.142.20.37:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
@@ -90,7 +82,7 @@ def download():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img"
         )
-    df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values'])
+    df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values']) # type: ignore
     df.to_csv('flaskalpr/data/upload-video.csv', sep='\t', encoding='utf-8' )
     print(df.to_string()) 
     path = 'data/upload-video.csv'

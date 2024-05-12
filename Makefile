@@ -4,7 +4,7 @@ flask:
 flask_db_init:
 	flask --app flaskalpr init-db
 wait:
-	waitress-serve  --call 'flaskalpr:create_app'	
+	waitress-serve  --port=5000 --call 'flaskalpr:create_app'	
 
 clean: 
 	rm -rf flaskalpr/static/alprd1_images/
@@ -28,9 +28,8 @@ remove:
 	docker-compose down -v
 	docker-compose rm -f
 
-ffmpeg_mp4:
+ffmpeg_serve:
 	ffmpeg -i flaskalpr/static/uploaded-video/alprVideo.mp4 -listen 1 -f mp4 -movflags frag_keyframe+empty_moov  http://127.0.0.1:5001
 
-#	redis
-#SCAN 0 count 100 match *19*
-
+ffmpeg_comp:
+	 ffmpeg -i alpr-video.mp4 -vcodec libx265 -crf 40 alpr-video-small.mp4
