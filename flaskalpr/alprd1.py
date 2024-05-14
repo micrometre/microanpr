@@ -4,16 +4,14 @@ import re
 from flask import (
     Response, Blueprint, request, jsonify, render_template, send_file 
 )
-import os
 from flask import Flask, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
 import redis
 import json
-from flaskalpr.filewatch import  get_images_alprd1
 import pandas as pd
 from json import loads, dumps
-import mysql.connector
+from flask_sse import sse # type: ignore
 
 
 
@@ -87,3 +85,9 @@ def download():
     print(df.to_string()) 
     path = 'data/upload-video.csv'
     return send_file(path, as_attachment=True)
+
+
+@bp.route('/hello')
+def publish_hello():
+    sse.publish({"message": "Hello!"}, type='greeting')
+    return "Message sent!"    

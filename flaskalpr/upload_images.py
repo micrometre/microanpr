@@ -36,7 +36,7 @@ def upload_file():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            filename = secure_filename(file.filename) # type: ignore
             file.save(os.path.join( 'flaskalpr/static/uploaded-images',filename))
             alpr_file = (os.path.join('flaskalpr/static/uploaded-images', filename))
             alpr_arg1 = "-c"
@@ -48,7 +48,7 @@ def upload_file():
             result = jl["results"]
             result_plate = result[0]["plate"]
             upload_id = r.incr("alpr_ids")
-            r.hset("upload_plate_to_img", upload_id, result_plate)
+            r.hset("upload_plate_to_img", upload_id, result_plate) # type: ignore
             r.hset(f"upload_plate:{upload_id}",mapping={"alpr_plate": result_plate,},)
             return redirect(url_for('home.alpr_home'))
     return '''
