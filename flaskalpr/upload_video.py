@@ -38,7 +38,7 @@ def upload_file():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            filename = secure_filename(file.filename) # type: ignore
             file.save(os.path.join( 'flaskalpr/static/uploaded-video',filename))
             alpr_file = (os.path.join('flaskalpr/static/uploaded-video', filename))
             start_alprd = subprocess.check_output(['alprd'])

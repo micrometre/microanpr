@@ -3,4 +3,4 @@ services:
     build: .
     user: root
     volumes:
-      - ../static/images:/var/lib/openalpr/plateimages
+      - ./flaskalpr/static/images:/var/lib/openalpr/plateimages

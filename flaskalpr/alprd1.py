@@ -54,7 +54,7 @@ def alpr_from_video():
         data = alpr_plate
         r.publish("alprd1", json.dumps(data))
         r.publish("alprd1images", ((alpr_img_uuid)))
-        return jsonify(status="success", message="published", data=data)
+        return jsonify(status="success", message="published", data=data) # type: ignore
     except:
         return jsonify(status="fail", message="not published")    
     

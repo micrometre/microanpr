@@ -8,6 +8,17 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flaskalpr.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+
+
+currentUser = ("User name: test")
+txtPassword = ("Password: test")
+default_pass = generate_password_hash(txtPassword)
+#c.execute("insert into Hashes values (?, ?)", (currentUser, default_pass))
+
+print(default_pass)
+
+
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
