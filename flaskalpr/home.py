@@ -20,7 +20,7 @@ bp = Blueprint('home', __name__, url_prefix='/')
 
 
 @bp.route('/')
-#@login_required
+@login_required
 def alpr_home():
    return render_template('index.html')      
 
