@@ -11,7 +11,6 @@ import redis
 import json
 import pandas as pd
 from json import loads, dumps
-from flask_sse import sse # type: ignore
 
 
 
@@ -84,7 +83,7 @@ def download():
     df.to_csv('flaskalpr/data/upload-video.csv', sep='\t', encoding='utf-8' )
     print(df.to_string()) 
     path = 'data/upload-video.csv'
-    return send_file(path, as_attachment=True)
+    return send_file(path, as_attachment=True) # type: ignore
 
 
 @bp.route('/hello')
