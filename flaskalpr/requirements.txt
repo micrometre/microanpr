@@ -11,3 +11,5 @@ waitress
 pyopenssl
 build
 gunicorn
+gevent
+flask-sse

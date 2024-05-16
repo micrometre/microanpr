@@ -3,7 +3,7 @@ flask:
 	flask --app flaskalpr run -h 0.0.0.0 --debug --reload
 
 gunicorn:
-	gunicorn  -w 4  -b 0.0.0.0:5000 'flaskalpr:create_app()'
+	gunicorn -k gevent   -b 0.0.0.0:5000 'flaskalpr:create_app()'
 
 wait:
 	waitress-serve  --port=5000 --call 'flaskalpr:create_app'	
