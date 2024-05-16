@@ -39,7 +39,7 @@ def alpr_from_video():
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
-    print(current_app.config['DATABASE'])
+    print(current_app.config['HOST'])
     if match:
         print(match.group())  
         r.hset(

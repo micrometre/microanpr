@@ -10,6 +10,7 @@ def create_app(test_config=None):
     app = Flask(__name__, static_folder='static', static_url_path='', instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY="dev",
+        HOST="dev",
         REDIS_URL = "redis://localhost:6379",
         DATABASE=os.path.join(app.instance_path, "flaskralpr.sqlite"),
     )
