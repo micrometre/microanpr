@@ -12,6 +12,8 @@ import json
 import pandas as pd
 from json import loads, dumps
 
+from flask_sse import sse # type: ignore
+from flask import current_app, g
 
 
 
@@ -37,6 +39,7 @@ def alpr_from_video():
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
+    print(current_app.config['DATABASE'])
     if match:
         print(match.group())  
         r.hset(
@@ -56,7 +59,10 @@ def alpr_from_video():
         return jsonify(status="success", message="published", data=data) # type: ignore
     except:
         return jsonify(status="fail", message="not published")    
-    
+@bp.route('/hello')
+def publish_hello():
+    r.publish({"message": "Hello!"} ) # type: ignore
+    return "Message sent!"        
 @bp.route('/alprd1', methods=["GET"])
 def sse():
     def sse_events():
@@ -86,7 +92,3 @@ def download():
     return send_file(path, as_attachment=True) # type: ignore
 
 
-@bp.route('/hello')
-def publish_hello():
-    sse.publish({"message": "Hello!"}, type='greeting')
-    return "Message sent!"    
