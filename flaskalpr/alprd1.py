@@ -37,9 +37,9 @@ def alpr_img_keep():
         "alpr_plate_to_img"
         )
     for key, value in stored_alpr.items():
-        a = f"has the color {value}."    
+        a = f"{value}."    
         #print(f"{key} has the color {value}.")
-        print(type(a))    
+        print((a))    
     return(stored_alpr) 
 
 @bp.route('/alprd1', methods=["POST"])
@@ -63,8 +63,6 @@ def alpr_from_video():
                 "alpr_plate_img": alpr_img_uuid,
             },
         ) 
-        print(alpr_uuid)
-        print(alpr_img_uuid)
         r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
         r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
     try:
