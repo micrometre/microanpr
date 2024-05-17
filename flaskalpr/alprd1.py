@@ -6,13 +6,11 @@ from flask import (
 )
 from flask import Flask, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
-
 import redis
 import json
 import pandas as pd
 from json import loads, dumps
-
-from flask_sse import sse # type: ignore
+from flask_sse import sse 
 from flask import current_app, g
 
 
@@ -25,23 +23,38 @@ r = redis.Redis(
     decode_responses=True,
 )
 bp = Blueprint('alprd1', __name__, url_prefix='/alprd1')
+fruit_colors = {
+    "apple": "red",
+    "banana": "yellow",
+    "grape": "purple"
+}
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def alpr_img_keep():
+    stored_alpr  = r.hgetall(
+        "alpr_plate_to_img"
+        )
+    for key, value in stored_alpr.items():
+        a = f"has the color {value}."    
+        #print(f"{key} has the color {value}.")
+        print(type(a))    
+    return(stored_alpr) 
 
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
+    alpr_img_keep()
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
+    #print(alpr_uuid)
     alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     #alpr_img_uuid = ("http://34.142.20.37:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
-    print(current_app.config['HOST'])
     if match:
-        print(match.group())  
+        #print(match.group())  
         r.hset(
             f"alpr_plate:{alpr_plate}",
             mapping={
@@ -50,6 +63,8 @@ def alpr_from_video():
                 "alpr_plate_img": alpr_img_uuid,
             },
         ) 
+        print(alpr_uuid)
+        print(alpr_img_uuid)
         r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
         r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
     try:
@@ -59,10 +74,10 @@ def alpr_from_video():
         return jsonify(status="success", message="published", data=data) # type: ignore
     except:
         return jsonify(status="fail", message="not published")    
-@bp.route('/hello')
-def publish_hello():
-    r.publish({"message": "Hello!"} ) # type: ignore
-    return "Message sent!"        
+
+
+
+
 @bp.route('/alprd1', methods=["GET"])
 def sse():
     def sse_events():
