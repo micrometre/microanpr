@@ -23,11 +23,6 @@ r = redis.Redis(
     decode_responses=True,
 )
 bp = Blueprint('alprd1', __name__, url_prefix='/alprd1')
-fruit_colors = {
-    "apple": "red",
-    "banana": "yellow",
-    "grape": "purple"
-}
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -38,18 +33,16 @@ def alpr_img_keep():
         )
     for key, value in stored_alpr.items():
         a = f"{value}."    
-        #print(f"{key} has the color {value}.")
         print((a))    
     return(stored_alpr) 
 
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
-    alpr_img_keep()
+
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
-    #print(alpr_uuid)
-    alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
-    #alpr_img_uuid = ("http://34.142.20.37:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+    #alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+    alpr_img_uuid = ("http://34.105.172.98:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
@@ -91,6 +84,11 @@ def alpr_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img"
         )
+    d1 = {'Name': ['Pankaj', 'Meghna'], 'ID': [1, 2] }
+    #df = pd.DataFrame(d1)
+    df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values']) # type: ignore
+    csv_data = df.to_csv(header=['plate', 'img'])
+    print(csv_data)
     return(stored_alpr) 
 
 @bp.route('/download')
@@ -99,8 +97,10 @@ def download():
         "alpr_plate_to_img"
         )
     df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values']) # type: ignore
-    df.to_csv('flaskalpr/data/upload-video.csv', sep='\t', encoding='utf-8' )
-    print(df.to_string()) 
+    csv_data = df.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'])
+    #df.to_csv('flaskalpr/data/upload-video.csv', sep='\t', encoding='utf-8' )
+    #print(df.to_string()) 
+    print(csv_data)
     path = 'data/upload-video.csv'
     return send_file(path, as_attachment=True) # type: ignore
 

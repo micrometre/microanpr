@@ -15,8 +15,8 @@ default_user:
 	python3 flaskalpr/scripts/default_user.py 
 
 clean: 
-	rm -rf flaskalpr/static/alprd1_images/
-	mkdir flaskalpr/static/alprd1_images
+	sudo  rm -rf flaskalpr/static/alprd1_images/
+	sudo mkdir flaskalpr/static/alprd1_images
 
 start:
 	docker compose up -d 
