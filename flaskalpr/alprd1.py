@@ -30,17 +30,27 @@ def allowed_file(filename):
 
 
 
+"""
 def alpr_img_keep():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img"
         )
-    for key, value in stored_alpr.items():
+    for  value in stored_alpr.items():
         a = f"{value}."    
         b = glob.glob( "flaskalpr/static/alprd1_images/*.*")
-        c = f"{b}."    
-        print(type(c))
-        print(a)
-    return(stored_alpr) 
+        #c = f"{b}."    
+    d = list(stored_alpr.values()) 
+    e = glob.glob( "flaskalpr/static/alprd1_images/*.*")
+    #print((d))   
+    #print((e))   
+    first_list = [4, 9, 2, 3]
+    second_list = [4, 0, 1]
+    difference_result = []
+    for item in first_list:
+        if item not in second_list:
+            difference_result.append(item)
+        print(difference_result)
+    return(stored_alpr) """
 
 
 
@@ -49,7 +59,6 @@ def alpr_img_keep():
 
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
-    alpr_img_keep()
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
     #alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
