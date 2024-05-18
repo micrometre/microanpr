@@ -12,8 +12,8 @@ import pandas as pd
 from json import loads, dumps
 from flask_sse import sse 
 from flask import current_app, g
-
-
+import os, subprocess
+import glob, os
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
 ALLOWED_EXTENSIONS = {'mp4', 'png', 'jpg', 'jpeg', 'gif'}
@@ -27,18 +27,29 @@ bp = Blueprint('alprd1', __name__, url_prefix='/alprd1')
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+
 def alpr_img_keep():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img"
         )
     for key, value in stored_alpr.items():
         a = f"{value}."    
-        print((a))    
+        b = glob.glob( "flaskalpr/static/alprd1_images/*.*")
+        c = f"{b}."    
+        print(type(c))
+        print(a)
     return(stored_alpr) 
+
+
+
+
+
 
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
-
+    alpr_img_keep()
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
     #alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
@@ -98,9 +109,6 @@ def download():
         )
     df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values']) # type: ignore
     csv_data = df.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'])
-    #df.to_csv('flaskalpr/data/upload-video.csv', sep='\t', encoding='utf-8' )
-    #print(df.to_string()) 
-    print(csv_data)
     path = 'data/upload-video.csv'
     return send_file(path, as_attachment=True) # type: ignore
 
