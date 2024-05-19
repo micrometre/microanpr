@@ -30,39 +30,36 @@ def allowed_file(filename):
 
 
 
-"""
+
+
+
 def alpr_img_keep():
     stored_alpr  = r.hgetall(
-        "alpr_plate_to_img"
+        "alpr_img_url_to_alpr_img"
         )
-    for  value in stored_alpr.items():
-        a = f"{value}."    
-        b = glob.glob( "flaskalpr/static/alprd1_images/*.*")
-        #c = f"{b}."    
-    d = list(stored_alpr.values()) 
-    e = glob.glob( "flaskalpr/static/alprd1_images/*.*")
-    #print((d))   
-    #print((e))   
-    first_list = [4, 9, 2, 3]
-    second_list = [4, 0, 1]
+
+    img_list = list(stored_alpr.values()) 
+    img_path = glob.glob( "flaskalpr/static/alprd1_images/*.*")
+    #print((img_list))
+    #print((img_path))
     difference_result = []
-    for item in first_list:
-        if item not in second_list:
+    for item in img_path:
+        if item not in img_list:
             difference_result.append(item)
         print(difference_result)
-    return(stored_alpr) """
-
-
+    return(stored_alpr)
 
 
 
 
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
+    all_keys = [key.decode('utf-8') for key in r.hkeys('alpr_plate')]
+    print(all_keys) 
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
-    #alpr_img_uuid = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
-    alpr_img_uuid = ("http://34.105.172.98:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+    alpr_img = ("{}.jpg".format(alpr_uuid))
+    alpr_img_url = ("http://34.105.172.98:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
@@ -73,15 +70,17 @@ def alpr_from_video():
             mapping={
                 "alpr_plate_id": alpr_plate,
                 "alpr_plate": alpr_plate,
-                "alpr_plate_img": alpr_img_uuid,
+                "alpr_plate_img": alpr_img,
+                "alpr_plate_url": alpr_img_url,
             },
         ) 
         r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
-        r.hset("alpr_plate_to_img", alpr_plate, alpr_img_uuid)
+        r.hset("alpr_plate_to_img_url", alpr_plate, alpr_img_url)
+        r.hset("alpr_plate_to_img", alpr_plate, alpr_img)
     try:
         data = alpr_plate
         r.publish("alprd1", json.dumps(data))
-        r.publish("alprd1images", ((alpr_img_uuid)))
+        r.publish("alprd1images", ((alpr_img_url)))
         return jsonify(status="success", message="published", data=data) # type: ignore
     except:
         return jsonify(status="fail", message="not published")    
@@ -104,11 +103,10 @@ def alpr_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img"
         )
-    d1 = {'Name': ['Pankaj', 'Meghna'], 'ID': [1, 2] }
-    #df = pd.DataFrame(d1)
+    all_keys = r.hkeys('alpr_plate')
+    print(all_keys)    
     df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values']) # type: ignore
     csv_data = df.to_csv(header=['plate', 'img'])
-    print(csv_data)
     return(stored_alpr) 
 
 @bp.route('/download')
