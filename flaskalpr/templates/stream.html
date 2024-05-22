@@ -1,19 +1,65 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Flask-SSE Quickstart</title>
-</head>
-<body>
-  <h1>Flask-SSE Quickstart</h1>
-  <script>
-    var source = new EventSource("{{ url_for('stream.index') }}");
-    source.addEventListener('greeting', function(event) {
-        var data = JSON.parse(event.data);
-        alert("The server says " + data.message);
-    }, false);
-    source.addEventListener('error', function(event) {
-        alert("Failed to connect to event stream. Is Redis running?");
-    }, false);
-  </script>
-</body>
-</html>
+<div id="alprd-plates"></div>
+<h1>Test</h1>
+<div id="alprd-images"></div>
+<h1>img Test</h1>
+
+
+<script type="module">
+
+  import { onCleanup, createSignal, createResource } from "https://esm.sh/solid-js@1.8.1";
+  import { render } from "https://esm.sh/solid-js@1.8.1/web";
+  import html from "https://esm.sh/solid-js@1.8.1/html";
+  const Plates = () => {
+    const [plates, setPlates] = createSignal([])
+    var source = new EventSource("{{ url_for('alprd1.alpr_sse') }}");
+    source.onmessage = function (event) {
+      const alprdData = JSON.parse(event.data)
+      setPlates(alprdData)
+    };
+    return html`
+     <div class="position-relative overflow-hidden p-1 p-md-1 m-md-1 text-center">
+        <h2 class="pt-2 mt-2 mb-2 display-4 fw-bold">
+        ${plates}
+       </h2>
+    </div>
+    `;
+  };
+  //render(Plates, document.body);
+  render(Plates, document.getElementById('alprd-plates'));
+
+
+
+
+
+  const PlatesImages = () => {
+    const [PlatesImages, setPlatesImages] = createSignal([])
+    function onError(e) {
+      e.target.src =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/No_sign.svg/192px-No_sign.svg.png";
+    }
+    var source = new EventSource("{{ url_for('alprd1_images.alprd_images') }}");
+    source.onmessage = function (event) {
+      const alprdData = event.data
+      setPlatesImages(alprdData)
+      console.log(alprdData)
+      const img = document.getElementById("alpr-image")
+      img.addEventListener("error", function (event) {
+        event.target.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/No_sign.svg/192px-No_sign.svg.png";
+        event.onerror = null
+      })
+
+    };
+    return html`
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center">
+        <img src=${PlatesImages} class="img-thumbnail" id="alpr-image" alt="...">
+        <a target="_blank" href=${PlatesImages}>
+        <div  id="alpr-image-div" >${PlatesImages}</div>
+        </a>
+
+            </a>
+        </div>
+    
+        `;
+  };
+  render(PlatesImages, document.getElementById('alprd-images'));
+</script>

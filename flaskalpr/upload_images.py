@@ -60,13 +60,10 @@ def upload_image_file():
       <input type=submit value=Upload>
     </form>
     '''
-@bp.route('/upload/<filename>')
-def send_image(filename):
-    return send_from_directory("images", filename)
 
     
-@bp.route("/uploaddb", methods=["GET"])
-def alpr_result():
+@bp.route("/db", methods=["GET"])
+def alpr_img_result():
         res = r.hgetall("upload_plate_to_img")
         resj = format(res)
         return(resj)
