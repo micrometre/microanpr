@@ -28,7 +28,7 @@ def alpr_from_video():
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
     alpr_img = ("{}.jpg".format(alpr_uuid))
-    alpr_img_url = ("http://192.168.1.151:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+    alpr_img_url = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
