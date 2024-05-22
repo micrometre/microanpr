@@ -1,19 +1,13 @@
 from __future__ import print_function
-from datetime import date, datetime, timedelta
 import re
 from flask import (
     Response, Blueprint, request, jsonify, render_template, send_file 
 )
-from flask import Flask, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import redis
 import json
 import pandas as pd
 from json import loads, dumps
-from flask_sse import sse 
-from flask import current_app, g
-import os, subprocess
-import glob, os
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
 ALLOWED_EXTENSIONS = {'mp4', 'png', 'jpg', 'jpeg', 'gif'}
@@ -29,42 +23,17 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-
-
-
-
-def alpr_img_keep():
-    stored_alpr  = r.hgetall(
-        "alpr_img_url_to_alpr_img"
-        )
-
-    img_list = list(stored_alpr.values()) 
-    img_path = glob.glob( "flaskalpr/static/alprd1_images/*.*")
-    #print((img_list))
-    #print((img_path))
-    difference_result = []
-    for item in img_path:
-        if item not in img_list:
-            difference_result.append(item)
-        print(difference_result)
-    return(stored_alpr)
-
-
-
-
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
-    all_keys = [key.decode('utf-8') for key in r.hkeys('alpr_plate')]
-    print(all_keys) 
     request_data = request.get_json()
     alpr_uuid = request_data["uuid"]
     alpr_img = ("{}.jpg".format(alpr_uuid))
-    alpr_img_url = ("http://34.105.172.98:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+    alpr_img_url = ("http://192.168.1.151:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
     if match:
-        #print(match.group())  
+        print(match.group())  
         r.hset(
             f"alpr_plate:{alpr_plate}",
             mapping={
@@ -89,7 +58,7 @@ def alpr_from_video():
 
 
 @bp.route('/alprd1', methods=["GET"])
-def sse():
+def alpr_sse():
     def sse_events():
         pubsub = r.pubsub()
         pubsub.subscribe("alprd1")
@@ -99,7 +68,7 @@ def sse():
     return Response(sse_events(), mimetype="text/event-stream")
 
 @bp.route('/db')
-def alpr_db():
+def alpr_video_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img"
         )
@@ -110,7 +79,7 @@ def alpr_db():
     return(stored_alpr) 
 
 @bp.route('/download')
-def download():
+def download_video_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img"
         )
@@ -118,5 +87,3 @@ def download():
     csv_data = df.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'])
     path = 'data/upload-video.csv'
     return send_file(path, as_attachment=True) # type: ignore
-
-

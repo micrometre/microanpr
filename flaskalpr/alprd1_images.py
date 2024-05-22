@@ -1,8 +1,7 @@
 from flask import (
-    Response, Blueprint, request, jsonify, render_template, 
+    Response, Blueprint 
 )
 import redis
-import json
 r = redis.Redis(
     host='localhost',
     port=6379,

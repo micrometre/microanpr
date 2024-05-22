@@ -3,12 +3,8 @@
     <div class="container">
         <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg">
             <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                <video controls="controls" preload="preload" width="320" height="240">
-                    <source src="http://192.168.56.10:5000/video" type="video/mp4">
-                    </source>
-                </video>
                 <h2>Upload Video File</h2>
-                <form action="http://192.168.1.197:5000/upload_video/" method="POST"
+                <form action="{{url_for('upload_video.upload_video_file')}}" method="POST"
                     enctype="multipart/form-data">
                     <input type="file" accept="video/*" id="video-files" name="file" />
                     <input onclick="update();" type="submit" />

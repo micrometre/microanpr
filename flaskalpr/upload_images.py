@@ -26,7 +26,7 @@ def allowed_file(filename):
 
 
 @bp.route('/', methods=['GET', 'POST'])
-def upload_file():
+def upload_image_file():
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')

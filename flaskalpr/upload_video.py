@@ -4,8 +4,6 @@ from flask import (
 import os, subprocess
 import logging
 from werkzeug.utils import secure_filename
-from subprocess import check_output
-
 import redis
 
 
@@ -28,7 +26,7 @@ def allowed_file(filename):
 
 
 @bp.route('/', methods=['GET', 'POST'])
-def upload_file():
+def upload_video_file():
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
