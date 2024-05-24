@@ -16,7 +16,9 @@ default_user:
 
 clean: 
 	rm -rf flaskalpr/static/alprd*
+	rm -rf flaskalpr/static/uploaded-images
 	mkdir flaskalpr/static/alprd1_images
+	mkdir flaskalpr/static/uploaded-images
 
 start:
 	docker compose up -d 
