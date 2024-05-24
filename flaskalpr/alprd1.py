@@ -33,7 +33,7 @@ def alpr_from_video():
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
     if match:
-        print(match.group())  
+        #print(match.group())  
         r.hset(
             f"alpr_plate:{alpr_plate}",
             mapping={
@@ -70,7 +70,7 @@ def alpr_sse():
 @bp.route('/db')
 def alpr_video_db():
     stored_alpr  = r.hgetall(
-        "alpr_plate_to_img"
+        "alpr_plate_to_img_url"
         )
     all_keys = r.hkeys('alpr_plate')
     print(all_keys)    
@@ -81,7 +81,7 @@ def alpr_video_db():
 @bp.route('/download')
 def download_video_db():
     stored_alpr  = r.hgetall(
-        "alpr_plate_to_img"
+        "alpr_plate_to_img_url"
         )
     df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values']) # type: ignore
     csv_data = df.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'])

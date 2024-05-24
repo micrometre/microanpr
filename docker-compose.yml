@@ -25,11 +25,11 @@ services:
       - redis-network
     depends_on:
       - redis
-  alpr:
-    build: ./openalpr-upload
-    user: root
-    volumes:
-      - ./flaskalpr/static/alprd1_images:/var/lib/openalpr/plateimages      
+# alpr:
+#   build: ./openalpr-upload
+#   user: root
+#   volumes:
+#     - ./flaskalpr/static/alprd1_images:/var/lib/openalpr/plateimages      
 
 networks:
   redis-network:

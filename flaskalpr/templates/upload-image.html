@@ -1,20 +1,8 @@
 <div class="container">
-<script>
 
-let file = "{{url_for('upload_images.alpr_img_result')}}" 
-fetch(file)
-    .then(x => x.text())
-    .then(console.log(file))
-    .then(y => document.getElementById("uploaddb").innerHTML = y);
-
-
-</script>
     <h1>ALPR From Images/Photos</h1>
     <div class="card card-cover ">
-        <div class="d-flex flex-column ">
-            <h2>Result</h2>
-            <p id="uploaddb" class="hide">alpr_plate from image.</p>
-        </div>
+  
     </div>
     <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg">
         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow0">

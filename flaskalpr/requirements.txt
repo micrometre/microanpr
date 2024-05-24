@@ -13,3 +13,4 @@ build
 gunicorn
 gevent
 flask-sse
+ffmpeg-python

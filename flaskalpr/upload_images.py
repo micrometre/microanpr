@@ -45,11 +45,12 @@ def upload_image_file():
             alpr_arg4 = "-n 1"
             output = subprocess.check_output(['alpr',str(alpr_file), str(alpr_arg1), str(alpr_arg2), str(alpr_arg3), str(alpr_arg4)]).decode('utf-8')
             jl = json.loads(output)
-            result = jl["results"]
-            result_plate = result[0]["plate"]
-            upload_id = r.incr("alpr_ids")
-            r.hset("upload_plate_to_img", upload_id, result_plate) # type: ignore
-            r.hset(f"upload_plate:{upload_id}",mapping={"alpr_plate": result_plate,},)
+            result = jl['results']
+            result_plate = result[0]['plate']
+            print(result_plate)
+            upload_id = r.incr('alpr_ids')
+            r.hset('upload_plate_to_img', upload_id, result_plate) # type: ignore
+            r.hset(f'upload_plate:{upload_id}',mapping={'alpr_plate': result_plate,},)
             return redirect(url_for('home.alpr_home'))
     return '''
     <!doctype html>

@@ -27,7 +27,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import  home, video, alprd1, alprd1_images, upload_images, upload_video, db, auth, stream
+    from . import  home, video, alprd1, alprd1_images,   upload_images, upload_video, db, auth
     db.init_app(app)
     app.register_blueprint(home.bp)
     app.register_blueprint(video.bp)
@@ -36,7 +36,6 @@ def create_app(test_config=None):
     app.register_blueprint(upload_images.bp)
     app.register_blueprint(upload_video.bp)
     app.register_blueprint(auth.bp)
-    app.register_blueprint(stream.bp)
 
 
     app.add_url_rule("/", endpoint="index")
