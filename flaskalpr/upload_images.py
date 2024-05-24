@@ -47,7 +47,6 @@ def upload_image_file():
             jl = json.loads(output)
             result = jl['results']
             result_plate = result[0]['plate']
-            print(result_plate)
             upload_id = r.incr('alpr_ids')
             r.hset('upload_plate_to_img', upload_id, result_plate) # type: ignore
             r.hset(f'upload_plate:{upload_id}',mapping={'alpr_plate': result_plate,},)
@@ -77,6 +76,6 @@ def download_uploads_img():
         )
     df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values'])
     df.to_csv('flaskalpr/data/upload-img.csv', sep='\t', encoding='utf-8' )
-    print(df.to_string()) 
+    (df.to_string()) 
     path = 'data/upload-img.csv'
     return send_file(path, as_attachment=True)        

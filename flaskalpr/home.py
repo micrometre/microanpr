@@ -24,7 +24,7 @@ def alpr_home():
 @bp.route('/login', methods=['GET', 'POST'])
 def login_page():
     return {
-        "token": 'test123'
+        "token": 'test'
     }
 
 

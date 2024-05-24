@@ -50,7 +50,6 @@ def upload_video_file():
             alpr_arg7 = "frag_keyframe+empty_moov"
             alpr_arg8 = "http://127.0.0.1:5001"
             output = subprocess.check_output(['ffmpeg',str(alpr_arg1), str(alpr_file), str(alpr_arg2), str(alpr_arg3), str(alpr_arg4), str(alpr_arg5), str(alpr_arg6), str(alpr_arg7), str(alpr_arg8)]).decode('utf-8')
-            print(output)
             return redirect(url_for('home.alpr_home'))
     return '''
     <!doctype html>

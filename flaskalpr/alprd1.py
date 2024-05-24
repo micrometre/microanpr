@@ -73,7 +73,6 @@ def alpr_video_db():
         "alpr_plate_to_img_url"
         )
     all_keys = r.hkeys('alpr_plate')
-    print(all_keys)    
     df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values']) # type: ignore
     csv_data = df.to_csv(header=['plate', 'img'])
     return(stored_alpr) 
