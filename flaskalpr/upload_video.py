@@ -63,7 +63,3 @@ def upload_video_file():
 
 
 
-@bp.route('/display/<filename>')
-def display_video(filename):
-	return redirect(url_for('static', filename='upload/' + filename), code=301)
-

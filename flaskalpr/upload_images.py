@@ -79,3 +79,4 @@ def download_uploads_img():
     (df.to_string()) 
     path = 'data/upload-img.csv'
     return send_file(path, as_attachment=True)        
+

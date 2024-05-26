@@ -1,7 +1,7 @@
 [project]
 name = "flaskalpr"
 version = "1.0.0"
-description = "The basic blog app built in the Flask tutorial."
+description = "The ANPR/ALPR  built with Flask ."
 readme = "README.rst"
 license = {text = "BSD-3-Clause"}
 dependencies = [
