@@ -26,9 +26,16 @@ def allowed_file(filename):
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
     request_data = request.get_json()
+    host_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    app_port = ":5000"   
+    host_protocol = 'http://'
+    img_path = '/alprd1_images/'
+    img_format = '.jpg'
     alpr_uuid = request_data["uuid"]
+    alpr_img_url =  host_protocol + host_ip + app_port + img_path + alpr_uuid + img_format
+    print(alpr_img_url)
     alpr_img = ("{}.jpg".format(alpr_uuid))
-    alpr_img_url = ("http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
+    #alpr_img_url = ( "http://192.168.1.122:5000/alprd1_images/{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
     match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
