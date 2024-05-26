@@ -1,4 +1,5 @@
 from __future__ import print_function
+from pathlib import Path
 import re
 from flask import (
     Response, Blueprint, request, jsonify, render_template, send_file 
@@ -26,11 +27,14 @@ def allowed_file(filename):
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
     request_data = request.get_json()
-    host_url = request.host_url
-    img_path = 'alprd1_images/'
+    host_ip = request.environ['REMOTE_ADDR']
+    host_port = request.environ['SERVER_PORT']
+    host_protocol = request.environ['wsgi.url_scheme']
+    img_path = '/alprd1_images/'
     img_format = '.jpg'
     alpr_uuid = request_data["uuid"]
-    alpr_img_url = host_url + img_path + alpr_uuid + img_format
+    alpr_img_url = host_protocol + "://" + host_ip + ":" + host_port + img_path + alpr_uuid + img_format
+    print(alpr_img_url)
     alpr_img = ("{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
@@ -75,9 +79,10 @@ def alpr_video_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img_url"
         )
-    all_keys = r.hkeys('alpr_plate')
-    df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values']) # type: ignore
-    csv_data = df.to_csv(header=['plate', 'img'])
+    df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values'])
+    a = df.sort_values(by=['Key'])
+    b = a.to_numpy()
+    print(type(b))
     return(stored_alpr) 
 
 @bp.route('/download')

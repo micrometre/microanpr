@@ -19,6 +19,7 @@ clean:
 	rm -rf flaskalpr/static/uploaded-images
 	mkdir flaskalpr/static/alprd1_images
 	mkdir flaskalpr/static/uploaded-images
+	killall alprd
 
 start:
 	docker compose up -d 
