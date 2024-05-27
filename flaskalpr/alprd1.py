@@ -1,15 +1,11 @@
 from __future__ import print_function
-from pathlib import Path
 import re
 from flask import (
     Response, Blueprint, request, jsonify, render_template, send_file 
 )
-from werkzeug.utils import secure_filename
 import redis
 import json
 import pandas as pd
-import csv
-from json import loads, dumps
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
 ALLOWED_EXTENSIONS = {'mp4', 'png', 'jpg', 'jpeg', 'gif'}
@@ -80,9 +76,15 @@ def download_video_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img_url"
         )
-    df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values']) # type: ignore
-    csv_data = df.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'])
+
+    test_gb = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
+    test_diplomat = '239D7O3'
+    gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)}
+    #print("Filtered dictionary keys are : " + str(gb_plates))
+    df_gb = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) # type: ignore
+    csv_data = df_gb.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
     path = 'data/upload-video.csv'
+    print(df_gb)
     return send_file(path, as_attachment=True) # type: ignore
 
 
@@ -93,11 +95,11 @@ def alpr_video_db():
         "alpr_plate_to_img_url"
         )
     test_gb = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
+    test_diplomat = '239D7O3'
     gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)}
     #print("Filtered dictionary keys are : " + str(gb_plates))
-    df = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) # type: ignore
-    csv_data = df.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'])
+    df_gb = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) # type: ignore
+    csv_data = df_gb.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
     path = 'data/upload-video.csv'
-    print(df.sort_values(by=['Key']))
-
+    print(df_gb)
     return(gb_plates) 
