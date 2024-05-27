@@ -24,7 +24,8 @@ def allowed_file(filename):
 @bp.route('/alprd1', methods=["POST"])
 def alpr_from_video():
     request_data = request.get_json()
-    host_ip = request.environ['REMOTE_ADDR']
+    #host_ip = request.environ['REMOTE_ADDR']
+    host_ip = '192.168.1.117'
     host_port = request.environ['SERVER_PORT']
     host_protocol = request.environ['wsgi.url_scheme']
     img_path = '/alprd1_images/'
