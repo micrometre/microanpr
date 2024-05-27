@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 import redis
 import json
 import pandas as pd
+import csv
 from json import loads, dumps
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
@@ -91,7 +92,12 @@ def alpr_video_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img_url"
         )
-    test_suf = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
-    res = {key: val for key, val in stored_alpr.items() if re.search(f"{test_suf}$", key)}
-    print("Filtered dictionary keys are : " + str(res))
-    return(res) 
+    test_gb = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
+    gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)}
+    #print("Filtered dictionary keys are : " + str(gb_plates))
+    df = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) # type: ignore
+    csv_data = df.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'])
+    path = 'data/upload-video.csv'
+    print(df.sort_values(by=['Key']))
+
+    return(gb_plates) 
