@@ -104,4 +104,4 @@ def alpr_video_db():
     agrt_plates_dict = agrt_plates.to_dict(orient='records')
     csv_data = agrt_plates.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
     path = 'data/upload-video.csv'
-    return(stored_alpr) 
+    return(agrt_plates_dict) 
