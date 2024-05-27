@@ -76,17 +76,17 @@ def download_video_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img_url"
         )
-
+    test_diplomat = '^[0-9][0-9][0-9][A-Z][0-9][0-9][0-9]'
+    diplomat_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_diplomat}$", key)}
+    df_diplomat = pd.DataFrame(list(diplomat_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) 
     test_gb = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
-    test_diplomat = '239D7O3'
     gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)}
-    #print("Filtered dictionary keys are : " + str(gb_plates))
-    df_gb = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) # type: ignore
-    csv_data = df_gb.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
+    df_gb = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) 
+    a = pd.concat([df_gb, df_diplomat])
+    csv_data = a.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
+    b = a.to_html()
     path = 'data/upload-video.csv'
-    print(df_gb)
     return send_file(path, as_attachment=True) # type: ignore
-
 
 
 @bp.route('/db')
@@ -94,12 +94,14 @@ def alpr_video_db():
     stored_alpr  = r.hgetall(
         "alpr_plate_to_img_url"
         )
+    test_diplomat = '^[0-9][0-9][0-9][A-Z][0-9][0-9][0-9]'
+    diplomat_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_diplomat}$", key)}
+    df_diplomat = pd.DataFrame(list(diplomat_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) 
     test_gb = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
-    test_diplomat = '239D7O3'
     gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)}
-    #print("Filtered dictionary keys are : " + str(gb_plates))
-    df_gb = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) # type: ignore
-    csv_data = df_gb.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
+    df_gb = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) 
+    a = pd.concat([df_gb, df_diplomat])
+    csv_data = a.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
+    b = a.to_html()
     path = 'data/upload-video.csv'
-    print(df_gb)
-    return(gb_plates) 
+    return(b) 
