@@ -100,8 +100,8 @@ def alpr_video_db():
     test_gb = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
     gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)}
     df_gb = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) 
-    a = pd.concat([df_gb, df_diplomat])
-    csv_data = a.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
-    b = a.to_html()
+    agrt_plates = pd.concat([df_gb, df_diplomat])
+    agrt_plates_dict = agrt_plates.to_dict(orient='records')
+    csv_data = agrt_plates.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
     path = 'data/upload-video.csv'
-    return(b) 
+    return(stored_alpr) 
