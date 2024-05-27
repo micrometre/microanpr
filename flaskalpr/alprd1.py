@@ -74,17 +74,6 @@ def alpr_sse():
                 yield "data: {}\n\n".format(str(data))
     return Response(sse_events(), mimetype="text/event-stream")
 
-@bp.route('/db')
-def alpr_video_db():
-    stored_alpr  = r.hgetall(
-        "alpr_plate_to_img_url"
-        )
-    df = pd.DataFrame(list(stored_alpr.items()), columns=['Key', 'Values'])
-    a = df.sort_values(by=['Key'])
-    b = a.to_numpy()
-    print(type(b))
-    return(stored_alpr) 
-
 @bp.route('/download')
 def download_video_db():
     stored_alpr  = r.hgetall(
@@ -94,3 +83,12 @@ def download_video_db():
     csv_data = df.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'])
     path = 'data/upload-video.csv'
     return send_file(path, as_attachment=True) # type: ignore
+@bp.route('/db')
+def alpr_video_db():
+    stored_alpr  = r.hgetall(
+        "alpr_plate_to_img_url"
+        )
+    test_suf = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
+    res = {key: val for key, val in stored_alpr.items() if re.search(f"{test_suf}$", key)}
+    print("Filtered dictionary keys are : " + str(res))
+    return(res) 
