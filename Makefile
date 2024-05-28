@@ -15,8 +15,7 @@ default_user:
 	python3 flaskalpr/scripts/default_user.py 
 
 clean: 
-	rm -rf flaskalpr/static/alprd*
-	mkdir flaskalpr/static/alprd1_images
+	rm flaskalpr/static/alprd1_images/*.jpg
 	killall alprd
 
 start:
