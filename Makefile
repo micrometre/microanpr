@@ -16,7 +16,6 @@ default_user:
 
 clean: 
 	rm flaskalpr/static/alprd1_images/*.jpg
-	killall alprd
 
 start:
 	docker compose up -d 
