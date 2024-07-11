@@ -6,6 +6,7 @@ from flask import (
 import redis
 import json
 import pandas as pd
+from flask import current_app 
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
 ALLOWED_EXTENSIONS = {'mp4', 'png', 'jpg', 'jpeg', 'gif'}
@@ -32,25 +33,24 @@ def alpr_from_video():
     img_format = '.jpg'
     alpr_uuid = request_data["uuid"]
     alpr_img_url = host_protocol + "://" + host_ip + ":" + host_port + img_path + alpr_uuid + img_format
-    print(alpr_img_url)
     alpr_img = ("{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
-    match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
-    if match:
-       print(match.group())  
-       r.hset(
-           f"alpr_plate:{alpr_plate}",
-           mapping={
-               "alpr_plate_id": alpr_plate,
-               "alpr_plate": alpr_plate,
-               "alpr_plate_img": alpr_img,
-               "alpr_plate_url": alpr_img_url,
-           },
-       ) 
-       r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
-       r.hset("alpr_plate_to_img_url", alpr_plate, alpr_img_url)
-       r.hset("alpr_plate_to_img", alpr_plate, alpr_img)
+    #match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
+    #if match:
+       #print(match.group())  
+    r.hset(
+        f"alpr_plate:{alpr_plate}",
+        mapping={
+            "alpr_plate_id": alpr_plate,
+            "alpr_plate": alpr_plate,
+            "alpr_plate_img": alpr_img,
+            "alpr_plate_url": alpr_img_url,
+        },
+    ) 
+    r.hset("alpr_plate_to_id", alpr_plate, alpr_plate)
+    r.hset("alpr_plate_to_img_url", alpr_plate, alpr_img_url)
+    r.hset("alpr_plate_to_img", alpr_plate, alpr_img)
     try:
        data = alpr_plate
        r.publish("alprd1", json.dumps(data))
