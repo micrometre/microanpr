@@ -12,17 +12,15 @@
     </div>
 
     <section class="jumbotron text-center">
+        {% include 'upload-video.html' %}
+        {% include 'upload-video-results.html' %}
+        {% include 'stream.html' %}
+    </section>
+
+    <section class="jumbotron text-center">
         {% include 'upload-image.html' %}
 
     </section>
-            {% include 'stream.html' %}
-    <div class="container px-4 py-5" id="custom-cards">
-        <section class="jumbotron text-center">
-            {% include 'upload-video.html' %}
-            {% include 'upload-video-results.html' %}
-        </section>
-    </div>
-
 </body>
 {% include 'scripts.html' %}
 
