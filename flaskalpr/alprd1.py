@@ -36,9 +36,9 @@ def alpr_from_video():
     alpr_img = ("{}.jpg".format(alpr_uuid))
     alpr_results = request_data["results"]
     alpr_plate = alpr_results[0]["plate"]
+    print(alpr_plate)  
     #match = re.search(r'[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]', alpr_plate)
     #if match:
-       #print(match.group())  
     r.hset(
         f"alpr_plate:{alpr_plate}",
         mapping={
