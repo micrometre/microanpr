@@ -8,3 +8,5 @@ dependencies = [
     "flask",
 ]
 
+[tool.setuptools]
+py-modules = []
