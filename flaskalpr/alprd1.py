@@ -11,10 +11,18 @@ from flask import current_app
 UPLOAD_FOLDER = '/path/to/the/uploads'
 ALLOWED_EXTENSIONS = {'mp4', 'png', 'jpg', 'jpeg', 'gif'}
 r = redis.Redis(
-    host='localhost',
+    #host='localhost',
+    #host='http://172.17.0.1',
+    #host='0.0.0.0',
+    host='redis',
     port=6379,
     decode_responses=True,
 )
+def get_redis():
+    rd = redis.Redis(
+        connection_pool=r,
+    )
+    return rd
 bp = Blueprint('alprd1', __name__, url_prefix='/alprd1')
 
 def allowed_file(filename):

@@ -11,17 +11,17 @@ WORKDIR /app
 COPY . /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
+RUN pip install --trusted-host pypi.python.org -r flaskalpr/requirements.txt
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 
 # RUN export FLASK_ENV=development this export won't persist across images (each Dockerfile directive will generate an intermediate container, committed into an intermediate image: that image won't preserve the exported value) but ENV will persist
-ENV FLASK_APP flaskr
+ENV FLASK_APP flaskalpr
 ENV FLASK_ENV development 
 
-RUN ["python", "-m", "flask", "init-db"] 
-RUN ["python", "-m", "flask", "init-db"] 
+RUN ["pip","install", "-e", "."] 
+#RUN ["python", "-m", "flask", "init-db"] 
 
 ENTRYPOINT ["python"]
 
