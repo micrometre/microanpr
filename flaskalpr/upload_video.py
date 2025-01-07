@@ -1,3 +1,4 @@
+import json
 from flask import (
     Response, Blueprint, request, redirect, flash,  url_for, jsonify, render_template, 
 )
@@ -38,18 +39,12 @@ def upload_video_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename) # type: ignore
             file.save(os.path.join( 'flaskalpr/static/uploaded-video',filename))
-            alpr_file = (os.path.join('flaskalpr/static/uploaded-video', filename))
-            start_alprd = subprocess.check_output(['alprd'])
-            #clean_seasion_files = subprocess.check_output(["make", "clean"], text=True)
-            alpr_arg1 = "-i"
-            alpr_arg2 = "-listen"
-            alpr_arg3 = "1"
-            alpr_arg4 = "-f"
-            alpr_arg5 = "mp4"
-            alpr_arg6 = "-movflags"
-            alpr_arg7 = "frag_keyframe+empty_moov"
-            alpr_arg8 = "http://127.0.0.1:5001"
-            output = subprocess.check_output(['ffmpeg',str(alpr_arg1), str(alpr_file), str(alpr_arg2), str(alpr_arg3), str(alpr_arg4), str(alpr_arg5), str(alpr_arg6), str(alpr_arg7), str(alpr_arg8)]).decode('utf-8')
+            command = 'ffmpeg -i flaskalpr/static/uploaded-video/alprVideo1.mp4 -listen 1 -f mp4 -movflags frag_keyframe+empty_moov  http://127.0.0.1:5001'
+            try:
+                output = subprocess.check_output(command, shell=True, text=True) # type: ignore
+                print((output))
+            except subprocess.CalledProcessError as e:
+                output = f"Error: {e}"
             return redirect(url_for('home.alpr_home'))
     return '''
     <!doctype html>

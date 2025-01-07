@@ -1,4 +1,8 @@
 .PHONY: run
+dev_local:
+	docker compose up alpr redis redis-commander -d
+	flask --app flaskalpr run -h 0.0.0.0 --debug --reload
+
 flask:
 	flask --app flaskalpr run -h 0.0.0.0 --debug --reload
 
@@ -15,7 +19,7 @@ default_user:
 	python3 flaskalpr/scripts/default_user.py 
 
 clean: 
-	rm flaskalpr/static/alprd1_images/*.jpg
+	sudo rm flaskalpr/static/alprd1_images/*.jpg
 
 start:
 	docker compose up -d 

@@ -8,5 +8,20 @@ dependencies = [
     "flask",
 ]
 
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "flaskalpr"
+
+
+
+[tool.ruff]
+src = ["src"]
+
+
+
 [tool.setuptools]
 py-modules = []
