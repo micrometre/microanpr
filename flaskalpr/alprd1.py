@@ -16,14 +16,10 @@ r = redis.Redis(
     #host='0.0.0.0',
     #docker host name 
     #host='redis',
-    port=6379,
+    port=6378,
     decode_responses=True,
 )
-def get_redis():
-    rd = redis.Redis(
-        connection_pool=r,
-    )
-    return rd
+
 bp = Blueprint('alprd1', __name__, url_prefix='/alprd1')
 
 def allowed_file(filename):
@@ -87,10 +83,10 @@ def download_video_db():
         "alpr_plate_to_img_url"
         )
     test_diplomat = '^[0-9][0-9][0-9][A-Z][0-9][0-9][0-9]'
-    diplomat_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_diplomat}$", key)}
+    diplomat_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_diplomat}$", key)} # type: ignore
     df_diplomat = pd.DataFrame(list(diplomat_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) 
     test_gb = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
-    gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)}
+    gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)} # type: ignore
     df_gb = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) 
     a = pd.concat([df_gb, df_diplomat])
     csv_data = a.to_csv('flaskalpr/data/upload-video.csv',header=['plate', 'img'],index=False )
@@ -105,10 +101,10 @@ def alpr_video_db():
         "alpr_plate_to_img_url"
         )
     test_diplomat = '^[0-9][0-9][0-9][A-Z][0-9][0-9][0-9]'
-    diplomat_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_diplomat}$", key)}
+    diplomat_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_diplomat}$", key)} # type: ignore
     df_diplomat = pd.DataFrame(list(diplomat_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) 
     test_gb = '^[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]$'
-    gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)}
+    gb_plates = {key: val for key, val in stored_alpr.items() if re.search(f"{test_gb}$", key)} # type: ignore
     df_gb = pd.DataFrame(list(gb_plates.items()), columns=['Key', 'Values']).sort_values(by=['Key']) 
     agrt_plates = pd.concat([df_gb, df_diplomat])
     agrt_plates_dict = agrt_plates.to_dict(orient='records')

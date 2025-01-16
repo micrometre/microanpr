@@ -1,22 +1,13 @@
-from ffmpeg import FFmpeg
+import cv2
 
 
-def main():
-    ffmpeg = (
-        FFmpeg()
-        .option("y")
-        .input("input.mp4")
-        .output(
-            "output.mp4",
-            {"codec:v": "libx264"},
-            vf="scale=1280:-1",
-            preset="veryslow",
-            crf=24,
-        )
-    )
-
-    ffmpeg.execute()
-
-
-if __name__ == "__main__":
-    main()
+                             
+def cv_video_images():
+    vidcap = cv2.VideoCapture('./static/upload/alprVideo.mp4') # type: ignore
+    success,image = vidcap.read()
+    count = 0
+    while success:
+      cv2.imwrite("./static/tmp/frame%d.jpg" % count, image)     # type: ignore # save frame as JPEG file      
+      success,image = vidcap.read()
+      print('Read a new frame: ', success)
+      count += 1

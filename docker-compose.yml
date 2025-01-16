@@ -19,7 +19,7 @@ services:
       - redis:/var/lib/redis
       - redis-config:/usr/local/etc/redis/redis.conf
     ports:
-      - 6379:6379
+      - 6378:6379
     networks:
       - redis-network
   redis-commander:

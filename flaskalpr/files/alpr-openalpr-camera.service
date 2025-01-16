@@ -1,4 +1,4 @@
-#ExecStart=/home/dell/repos/pyanpr/.venv/bin/python  /home/dell/repos/pyanpr/test.py
+#ExecStart=/home/dell/repos/pyanpr/.venv/bin/python  /home/dell/repos/microanpr/flaskalpr/scripts/test.py
 [Unit]
 Description=ALPR Camera node-1
 After=systemd-user-sessions.service
